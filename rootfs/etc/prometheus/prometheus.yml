@@ -29,33 +29,10 @@ scrape_configs:
       - source_labels: [__param_location]
         target_label: location
 
-  - job_name: ssllabs-exporter
-    scrape_interval: 10m
-    scrape_timeout: 5m
-    metrics_path: /ssllabs/probe
-    scheme: https
-    authorization:
-      credentials: YOUR_API_KEY # Your ping7.io API token
-    params:
-      location: [eu-central] # Probe from the eu-central location
-    static_configs:
-      - targets:
-          - prometheus.io
-          - ping7.io
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - source_labels: [__param_location]
-        target_label: __address__
-        replacement: $1.ping7.io
-      - source_labels: [__param_location]
-        target_label: location
-
   - job_name: ssl
     metrics_path: /tls/probe
     scheme: https
+    scrape_interval: 6h
     authorization:
       credentials: YOUR_API_KEY # Your ping7.io API token
     params:
