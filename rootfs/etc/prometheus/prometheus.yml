@@ -1,16 +1,20 @@
 global:
   scrape_interval: 30s
 
+rule_files:
+  - /etc/prometheus/rules/*.yaml
+
 scrape_configs:
 
   # This Prometheus scrape configuration pobes several http/https
   # targets from ping7.io's eu-central location. To probe from more
   # locations, duplicate the job and change the location parameter
-  - job_name: blackbox
+  - job_name: blackbox-eu-central
     metrics_path: /blackbox/probe
     scheme: https
     authorization:
-      credentials: YOUR_API_KEY # Your ping7.io API token
+      # Your ping7.io API token stored in this file
+      credentials_file: /etc/prometheus/ping7io-token
     params:
       module: [http_2xx] # Look for a HTTP 200 response.
       location: [eu-central] # Probe from the eu-central location
@@ -23,18 +27,43 @@ scrape_configs:
         target_label: __param_target
       - source_labels: [__param_target]
         target_label: instance
-      - source_labels: [__param_location]
+      - source_labels: [__address__]
         target_label: __address__
-        replacement: $1.ping7.io
+        replacement: check.ping7.io
+      - source_labels: [__param_location]
+        target_label: location
+
+  - job_name: blackbox-us-east
+    metrics_path: /blackbox/probe
+    scheme: https
+    authorization:
+      # Your ping7.io API token stored in this file
+      credentials_file: /etc/prometheus/ping7io-token
+    params:
+      module: [http_2xx] # Look for a HTTP 200 response.
+      location: [us-east] # Probe from the us-east location
+    static_configs:
+      - targets:
+          - http://prometheus.io # First probe
+          - https://ping7.io # Second probe
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - source_labels: [__address__]
+        target_label: __address__
+        replacement: check.ping7.io
       - source_labels: [__param_location]
         target_label: location
 
   - job_name: ssl
     metrics_path: /tls/probe
     scheme: https
-    scrape_interval: 6h
+    scrape_interval: 15m
     authorization:
-      credentials: YOUR_API_KEY # Your ping7.io API token
+      # Your ping7.io API token stored in this file
+      credentials_file: /etc/prometheus/ping7io-token
     params:
       module: ["https"]
       location: [eu-central] # Probe from the eu-central location
@@ -47,8 +76,8 @@ scrape_configs:
         target_label: __param_target
       - source_labels: [__param_target]
         target_label: instance
-      - source_labels: [__param_location]
+      - source_labels: [__address__]
         target_label: __address__
-        replacement: $1.ping7.io
+        replacement: check.ping7.io
       - source_labels: [__param_location]
         target_label: location

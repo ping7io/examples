@@ -1,20 +1,25 @@
 # 💡 Integration Examples
 
-This repository contains example integrations of the [ping7.io](https://ping7.io) SaaS for [Prometheus](https://prometheus.io/).
+This repository contains example integrations for the [ping7.io](https://ping7.io) SaaS for managed Exporters for [Prometheus](https://prometheus.io/).
 
 ## Running this example project
 
 1. Have [Docker](https://www.docker.com/products/docker-desktop) installed 🐳
 1. Clone this project or download and unzip the sources 📦
 1. Register with [ping7.io](https://ping7.io/signup) and activate your API key 🔥
-1. Replace all `YOUR_API_KEY` placeholder in the `prometheus.yml` with your ping7.io API key 🔐
-1. Use `docker compose` to launch a local Prometheus instance 🤖
+1. Create a file named `ping7io-credentials` containing your api key 🔐
+
+```shell
+$ echo "YOUR_API_KEY" > ping7io-credentials
+```
+
+5. Use `docker compose` to launch a local Prometheus instance 🤖
 
 ```shell
 $ docker compose up
 ```
 
-Upon start, you can:
+Now you can:
 
 * view the [configured Prometheus targets](http://localhost:9090/targets)
 * query the [gathered metrics](http://localhost:9090/graph?g0.expr=probe_success&g0.tab=1&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1h)
@@ -31,13 +36,6 @@ Under the hood we are utilizing
 ### SSL Exporter
 
 * https://github.com/ribbybibby/ssl_exporter
-
-### SSL Labs Exporter
-
-> Coming soon!
-
-* https://github.com/anas-aso/ssllabs_exporter
-
 
 ## License
 
