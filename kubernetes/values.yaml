@@ -1,0 +1,58 @@
+alertmanager:
+  enabled: false
+pushgateway:
+  enabled: false
+
+server:
+  extraSecretMounts:
+    - name: secret-files
+      mountPath: /etc/prometheus/ping7io-token
+      subPath: "ping7io-token"
+      secretName: ping7io-api-token
+      readOnly: true
+
+#serverFiles:
+
+
+  ## Alerts configuration
+  ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+#  alerting_rules.yml: {}
+  # groups:
+  #   - name: Instances
+  #     rules:
+  #       - alert: InstanceDown
+  #         expr: up == 0
+  #         for: 5m
+  #         labels:
+  #           severity: page
+  #         annotations:
+  #           description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
+  #           summary: 'Instance {{ $labels.instance }} down'
+
+extraScrapeConfigs: |
+  - job_name: ping7io-blackbox-from-ingresses
+    metrics_path: /blackbox/probe
+    scheme: https
+    authorization:
+      credentials_file: /etc/prometheus/ping7io-token
+    params:
+      module: [http_2xx]
+      location: [eu-central]
+    kubernetes_sd_configs:
+    - role: ingress
+      follow_redirects: true
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_ingress_host]
+      regex: (.+)
+      action: keep
+    - source_labels: [__meta_kubernetes_ingress_scheme,__meta_kubernetes_ingress_host]
+      separator: ://
+      target_label: __param_target
+      action: replace
+    - source_labels: [__param_target]
+      target_label: instance
+    - source_labels: [__address__]
+      target_label: __address__
+      replacement: check.ping7.io
+    - source_labels: [__param_location]
+      target_label: location
