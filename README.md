@@ -5,7 +5,7 @@ SaaS for managed Exporters for [Prometheus](https://prometheus.io/).
 
 ## Prerequisites
 
-Register with [ping7.io](https://ping7.io/signup) and acvquire an API token.
+Register with [ping7.io](https://ping7.io/signup) and acquire an API token.
 
 ## Example integations
 
