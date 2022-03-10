@@ -1,4 +1,4 @@
-# Kubernetes integration example
+# 🎡 ping7.io Kubernetes integration example
 
 This example spins up a local Minikube cluster, installs Prometheus
 into the cluster and let ping7.io check all Ingresses defined in
@@ -22,6 +22,8 @@ On a Mac, [Homebrew](https://brew.sh/) does the job:
 $ brew install minikube helm k9s
 ```
 
+Please clone this project or download and unzip the sources.
+
 ## Running this example
 
 1. Launch Minkube
@@ -30,7 +32,7 @@ $ brew install minikube helm k9s
 $ minikube start
 ```
 
-2. Create a Kubernetes secret for your api token and store it in the cluster.
+2. Create a Kubernetes secret for your ping7.io api token and store it in the cluster.
 
 ```
 $ echo "YOUR_API_KEY" > ping7io-credentials
@@ -79,12 +81,10 @@ $ kubectl --namespace default port-forward $POD_NAME 9090
 ```
 $ helm uninstall ping7io-example
 $ minikube stop
-✋  Stopping node "minikube"  ...
-🛑  Powering off "minikube" via SSH ...
-🛑  1 node stopped.
 $ minikube delete
-🔥  Deleting "minikube" in docker ...
-🔥  Deleting container "minikube" ...
-🔥  Removing ...
-💀  Removed all traces of the "minikube" cluster.
 ```
+
+## Further reading
+
+For detailed configuration options, head over to
+[`docs.ping7.io`](https://docs.ping7.io)

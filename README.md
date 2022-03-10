@@ -1,41 +1,33 @@
-# 💡 Integration Examples
+# 💡 ping7.io integration examples
 
-This repository contains example integrations for the [ping7.io](https://ping7.io) SaaS for managed Exporters for [Prometheus](https://prometheus.io/).
+This repository contains example integrations for the [ping7.io](https://ping7.io)
+SaaS for managed Exporters for [Prometheus](https://prometheus.io/).
 
-## Running this example project
+## Prerequisites
 
-1. Have [Docker](https://www.docker.com/products/docker-desktop) installed 🐳
-1. Clone this project or download and unzip the sources 📦
-1. Register with [ping7.io](https://ping7.io/signup) and activate your API key 🔥
-1. Create a file named `ping7io-credentials` containing your api key 🔐
+Register with [ping7.io](https://ping7.io/signup) and acvquire an API token.
 
-```shell
-$ echo "YOUR_API_KEY" > ping7io-credentials
-```
+## Example integations
 
-5. Use `docker compose` to launch a local Prometheus instance 🤖
+This project contains the following example integrations.
 
-```shell
-$ docker compose up
-```
+### 🐳 Docker
 
-Now you can:
+[Launches a local Prometheus via Docker that checks statically configured
+websites via the ping7.io API.](docker/). This example is the easiest first
+time starting point.
 
-* view the [configured Prometheus targets](http://localhost:9090/targets)
-* query the [gathered metrics](http://localhost:9090/graph?g0.expr=probe_success&g0.tab=1&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1h)
-* analyze the [alarming rules](http://localhost:9090/alerts)
+### 🎡 Kubernetes
 
-## Available Exporters
+[Launches a local Minikube cluster and checks all Ingresses configured in
+the cluster via the ping7.io API.](kubernetes/). When Kubernetes is your
+primary compute source, this integration adapts to any change made to your
+Ingresses.
 
-Under the hood we are utilizing
+## Further reading
 
-### Blackbox Exporter
-
-* https://github.com/prometheus/blackbox_exporter
-
-### SSL Exporter
-
-* https://github.com/ribbybibby/ssl_exporter
+For detailed configuration options, head over to
+[`docs.ping7.io`](https://docs.ping7.io)
 
 ## License
 
