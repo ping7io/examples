@@ -49,6 +49,10 @@ extraScrapeConfigs: |
       separator: ://
       target_label: __param_target
       action: replace
+    - source_labels: [__param_target,__meta_kubernetes_ingress_annotation_ping7_io_path]
+      separator: ""
+      target_label: __param_target
+      action: replace
     - source_labels: [__param_target]
       target_label: instance
     - source_labels: [__address__]
