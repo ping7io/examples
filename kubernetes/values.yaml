@@ -42,13 +42,30 @@ extraScrapeConfigs: |
     - role: ingress
       follow_redirects: true
     relabel_configs:
+
+      # Check for ingress with a configured FQDN
     - source_labels: [__meta_kubernetes_ingress_host]
       regex: (.+)
       action: keep
+
+      # scrape only ingresses with the ping7.io/scrape annotation
+    - source_labels: [__meta_kubernetes_ingress_annotation_ping7_io_scrape]
+      action: keep
+      regex: "true"
+
+      # use the scheme in the ping7.io/scheme annotation (if present)
+    - source_labels: [__meta_kubernetes_ingress_annotation_ping7_io_scheme]
+      regex: (.+)
+      action: replace
+      target_label: __meta_kubernetes_ingress_scheme
+
+      # Compute target out of ingress scheme and ingress host
     - source_labels: [__meta_kubernetes_ingress_scheme,__meta_kubernetes_ingress_host]
       separator: ://
       target_label: __param_target
       action: replace
+
+      # Append path to target if present in ping7.io/path annotation
     - source_labels: [__param_target,__meta_kubernetes_ingress_annotation_ping7_io_path]
       separator: ""
       target_label: __param_target

@@ -59,9 +59,10 @@ $ helm install ping7io-example \
 
 ```
 $ kubectl create deployment echoserver --image=k8s.gcr.io/echoserver:1.10
-$ kubectl create -f example-ingresses/echoserver-svc.yaml
-$ kubectl create -f example-ingresses/ping7.io.yaml
-$ kubectl create -f example-ingresses/prometheus.io.yaml
+$ kubectl apply -f example-ingresses/echoserver-svc.yaml
+$ kubectl apply -f example-ingresses/ping7.io.yaml
+$ kubectl apply -f example-ingresses/prometheus.io.yaml
+$ kubectl apply -f example-ingresses/google.com.yaml
 ```
 
 5. Connect to the Prometheus UI

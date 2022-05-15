@@ -1,12 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: prometheusio
+  name: googlecom
   annotations:
-    ping7.io/scrape: "true"
+    ping7.io/scrape: "false"
 spec:
   rules:
-  - host: "prometheus.io"
+  - host: "google.com"
     http:
       paths:
       - path: /

@@ -3,7 +3,9 @@ kind: Ingress
 metadata:
   name: ping7io
   annotations:
-    ping7_io_path: "/imprint"
+    ping7.io/path: "/imprint"
+    ping7.io/scheme: "https"
+    ping7.io/scrape: "true"
 spec:
   rules:
   - host: "ping7.io"
