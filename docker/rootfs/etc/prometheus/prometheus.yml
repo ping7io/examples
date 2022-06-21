@@ -7,9 +7,8 @@ rule_files:
 scrape_configs:
 
   # This Prometheus scrape configuration pobes several http/https
-  # targets from ping7.io's eu-central location. To probe from more
-  # locations, duplicate the job and change the location parameter
-  - job_name: blackbox-eu-central
+  # targets from ping7.io's eu-central and us-east locations.
+  - job_name: blackbox
     metrics_path: /blackbox/probe
     scheme: https
     authorization:
@@ -17,7 +16,9 @@ scrape_configs:
       credentials_file: /etc/prometheus/ping7io-token
     params:
       module: [http_2xx] # Look for a HTTP 200 response.
-      location: [eu-central] # Probe from the eu-central location
+      location:
+        - eu-central # Probe from the eu-central location
+        - us-east    # Probe from the us-east location
     static_configs:
       - targets:
           - http://prometheus.io # First probe
@@ -66,7 +67,8 @@ scrape_configs:
       credentials_file: /etc/prometheus/ping7io-token
     params:
       module: ["https"]
-      location: [eu-central] # Probe from the eu-central location
+      location:
+        - eu-central # Probe from the eu-central location
     static_configs:
       - targets:
           - ping7.io:443

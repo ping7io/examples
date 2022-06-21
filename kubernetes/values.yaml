@@ -37,7 +37,9 @@ extraScrapeConfigs: |
       credentials_file: /etc/prometheus/ping7io-token
     params:
       module: [http_2xx]
-      location: [eu-central]
+      location:
+        - eu-central
+        - us-east
     kubernetes_sd_configs:
     - role: ingress
       follow_redirects: true
