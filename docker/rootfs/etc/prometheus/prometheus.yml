@@ -18,31 +18,8 @@ scrape_configs:
       module: [http_2xx] # Look for a HTTP 200 response.
       location:
         - eu-central # Probe from the eu-central location
+        - eu-north
         - us-east    # Probe from the us-east location
-    static_configs:
-      - targets:
-          - http://prometheus.io # First probe
-          - https://ping7.io # Second probe
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - source_labels: [__address__]
-        target_label: __address__
-        replacement: check.ping7.io
-      - source_labels: [__param_location]
-        target_label: location
-
-  - job_name: blackbox-us-east
-    metrics_path: /blackbox/probe
-    scheme: https
-    authorization:
-      # Your ping7.io API token stored in this file
-      credentials_file: /etc/prometheus/ping7io-token
-    params:
-      module: [http_2xx] # Look for a HTTP 200 response.
-      location: [us-east] # Probe from the us-east location
     static_configs:
       - targets:
           - http://prometheus.io # First probe
