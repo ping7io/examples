@@ -1,5 +1,6 @@
 global:
   scrape_interval: 30s
+  query_log_file: /etc/prometheus/query.log
 
 rule_files:
   - /etc/prometheus/rules/*.yaml
@@ -11,6 +12,7 @@ scrape_configs:
   - job_name: blackbox
     metrics_path: /blackbox/probe
     scheme: https
+    scrape_interval: 5m
     authorization:
       # Your ping7.io API token stored in this file
       credentials_file: /etc/prometheus/ping7io-token
@@ -24,6 +26,8 @@ scrape_configs:
       - targets:
           - http://prometheus.io # First probe
           - https://ping7.io # Second probe
+          - https://google.com
+          - https://adsoul.com
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -32,13 +36,14 @@ scrape_configs:
       - source_labels: [__address__]
         target_label: __address__
         replacement: check.ping7.io
-      - source_labels: [__param_location]
-        target_label: location
+#      - source_labels: [ __param_location ]
+#        target_label: location
 
   - job_name: ssl
     metrics_path: /tls/probe
     scheme: https
     scrape_interval: 15m
+    scrape_timeout: 1m
     authorization:
       # Your ping7.io API token stored in this file
       credentials_file: /etc/prometheus/ping7io-token
@@ -58,5 +63,5 @@ scrape_configs:
       - source_labels: [__address__]
         target_label: __address__
         replacement: check.ping7.io
-      - source_labels: [__param_location]
-        target_label: location
+#      - source_labels: [__param_location]
+#        target_label: location
