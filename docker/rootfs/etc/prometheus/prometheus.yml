@@ -1,6 +1,6 @@
 global:
   scrape_interval: 30s
-  query_log_file: /etc/prometheus/query.log
+#  query_log_file: /etc/prometheus/query.log
 
 rule_files:
   - /etc/prometheus/rules/*.yaml
@@ -10,32 +10,56 @@ scrape_configs:
   # This Prometheus scrape configuration pobes several http/https
   # targets from ping7.io's eu-central and us-east locations.
   - job_name: blackbox
-    metrics_path: /blackbox/probe
+    file_sd_configs:
+      - files:
+          - /etc/prometheus/blackbox/targets.yml
+    metrics_path: /blackbox/probex^
     scheme: https
     scrape_interval: 5m
     authorization:
       # Your ping7.io API token stored in this file
       credentials_file: /etc/prometheus/ping7io-token
-    params:
-      module: [http_2xx] # Look for a HTTP 200 response.
-      location:
-        - eu-central # Probe from the eu-central location
-        - eu-north
-        - us-east    # Probe from the us-east location
-    static_configs:
-      - targets:
-          - http://prometheus.io # First probe
-          - https://ping7.io # Second probe
-          - https://google.com
-          - https://adsoul.com
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
+      - source_labels: [ module ]
+        target_label: __param_module
+      - source_labels: [ location ]
+        target_label: __param_location
       - source_labels: [__param_target]
         target_label: instance
       - source_labels: [__address__]
         target_label: __address__
         replacement: check.ping7.io
+
+
+  #  - job_name: blackbox
+#    metrics_path: /blackbox/probe
+#    scheme: https
+#    scrape_interval: 5m
+#    authorization:
+#      # Your ping7.io API token stored in this file
+#      credentials_file: /etc/prometheus/ping7io-token
+#    params:
+#      module: [http_2xx] # Look for a HTTP 200 response.
+#      location:
+#        - eu-central # Probe from the eu-central location
+#        - eu-north
+#        - us-east    # Probe from the us-east location
+#    static_configs:
+#      - targets:
+#          - http://prometheus.io # First probe
+#          - https://ping7.io # Second probe
+#          - https://google.com
+#          - https://adsoul.com
+#    relabel_configs:
+#      - source_labels: [__address__]
+#        target_label: __param_target
+#      - source_labels: [__param_target]
+#        target_label: instance
+#      - source_labels: [__address__]
+#        target_label: __address__
+#        replacement: check.ping7.io
 #      - source_labels: [ __param_location ]
 #        target_label: location
 

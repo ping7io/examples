@@ -1,0 +1,18 @@
+- labels:
+    module: http_2xx
+    location: eu-central
+  targets:
+    - https://ping7.io
+    - https://prometheus.io
+- labels:
+    module: http_2xx
+    location: eu-north
+  targets:
+    - https://ping7.io
+    - https://prometheus.io
+- labels:
+    module: http_2xx
+    location: us-east
+  targets:
+    - https://ping7.io
+    - https://prometheus.io
