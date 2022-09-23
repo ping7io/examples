@@ -81,7 +81,7 @@ $ kubectl --namespace default port-forward $POD_NAME 9090
 ## Fine tuning your Ingresses with annotations
 
 * `ping7.io/scrape` - Disable probing this Ingress using `false` as value
-* `ping7.io/module` - Configure a different module than the default one for this Ingress (e.g. `http_4xx`)
+* `ping7.io/module` - Configure a different [module](https://docs.ping7.io/docs/exporters/blackbox/modules.html#modules) than the default one for this Ingress (e.g. `http_4xx`)
 * `ping7.io/scheme` - The scheme to use (`http` or `https`)
 * `ping7.io/path` - The path append to the hostname, e.g. `/actuator/health`
 
