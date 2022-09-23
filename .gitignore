@@ -1,1 +1,8 @@
 *-token
+
+### IntelliJ
+.idea_modules/
+.idea/*
+### Shared code style settings
+!.idea/codeStyleSettings.xml
+*.iml
