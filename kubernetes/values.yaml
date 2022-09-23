@@ -2,6 +2,10 @@ alertmanager:
   enabled: false
 pushgateway:
   enabled: false
+kubeStateMetrics:
+  enabled: false
+nodeExporter:
+  enabled: false
 
 server:
   extraSecretMounts:
@@ -10,8 +14,6 @@ server:
       subPath: "ping7io-token"
       secretName: ping7io-api-token
       readOnly: true
-
-#serverFiles:
 
 
   ## Alerts configuration
@@ -47,14 +49,34 @@ extraScrapeConfigs: |
     - source_labels: [__meta_kubernetes_ingress_host]
       regex: (.+)
       action: keep
-    - source_labels: [__meta_kubernetes_ingress_scheme,__meta_kubernetes_ingress_host]
+
+      # ping7.io/scrape
+    - source_labels: [__meta_kubernetes_ingress_annotation_ping7_io_scrape]
+      regex: false
+      action: drop
+
+      # ping7.io/module
+    - source_labels: [__meta_kubernetes_ingress_annotation_ping7_io_module]
+      target_label: __param_module
+
+      # ping7.io/scheme
+    - source_labels: [__meta_kubernetes_ingress_scheme]
+      regex: (.+)
+      target_label: __tmp_ping7_io_scheme
+    - source_labels: [__meta_kubernetes_ingress_annotation_ping7_io_scheme]
+      regex: (.+)
+      target_label: __tmp_ping7_io_scheme
+    - source_labels: [__tmp_ping7_io_scheme,__meta_kubernetes_ingress_host]
       separator: ://
       target_label: __param_target
-      action: replace
+
+      # ping7.io/path
+    - source_labels: [__param_target,__meta_kubernetes_ingress_annotation_ping7_io_path]
+      separator: ""
+      target_label: __param_target
+
     - source_labels: [__param_target]
       target_label: instance
     - source_labels: [__address__]
       target_label: __address__
       replacement: check.ping7.io
-    - source_labels: [__param_location]
-      target_label: location

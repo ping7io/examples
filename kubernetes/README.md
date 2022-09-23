@@ -35,7 +35,7 @@ $ minikube start
 2. Create a Kubernetes secret for your ping7.io api token and store it in the cluster.
 
 ```
-$ echo "YOUR_API_KEY" > ping7io-credentials
+$ echo "YOUR_API_KEY" > ping7io-token
 $ kubectl create secret generic ping7io-api-token \
   --from-file=./ping7io-token
 ```
@@ -48,8 +48,7 @@ $ kubectl create secret generic ping7io-api-token \
 ```
 $ helm repo add prometheus-community \
     https://prometheus-community.github.io/helm-charts
-$ helm install ping7io-example \
-    prometheus-community/prometheus \
+$ helm install ping7io-example prometheus-community/prometheus \
     -f values.yaml
 ```
 4. Create some Ingresses
@@ -58,10 +57,12 @@ $ helm install ping7io-example \
 > back the Ingress definition with a Service.
 
 ```
-$ kubectl create deployment echoserver --image=k8s.gcr.io/echoserver:1.10
-$ kubectl create -f example-ingresses/echoserver-svc.yaml
-$ kubectl create -f example-ingresses/ping7.io.yaml
-$ kubectl create -f example-ingresses/prometheus.io.yaml
+$ kubectl create deployment echoserver --image=k8s.gcr.io/echoserver:1.10 && \
+  kubectl apply -f example-ingresses/echoserver-svc.yaml && \
+  kubectl apply -f example-ingresses/ping7.io.yaml && \
+  kubectl apply -f example-ingresses/prometheus.io.yaml && \
+  kubectl apply -f example-ingresses/grafana.com.yaml && \
+  kubectl apply -f example-ingresses/check.ping7.io.yaml
 ```
 
 5. Connect to the Prometheus UI
@@ -75,6 +76,14 @@ $ kubectl --namespace default port-forward $POD_NAME 9090
 > to open the Prometheus UI.
 
 ![Ingress in Prometheus](ping7io_kubernetes_ingress.png)
+
+
+## Fine tuning your Ingresses with annotations
+
+* `ping7.io/scrape` - Disable probing this Ingress using `false` as value
+* `ping7.io/module` - Configure a different module than the default one for this Ingress (e.g. `http_4xx`)
+* `ping7.io/scheme` - The scheme to use (`http` or `https`)
+* `ping7.io/path` - The path append to the hostname, e.g. `/actuator/health`
 
 ## Shutting everything down
 

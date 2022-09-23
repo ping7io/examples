@@ -2,6 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ping7io
+  annotations:
+    ping7.io/scheme: https
 spec:
   rules:
   - host: "ping7.io"
