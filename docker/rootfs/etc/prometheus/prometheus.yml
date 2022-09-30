@@ -17,9 +17,9 @@ scrape_configs:
     params:
       module: [http_2xx] # Look for a HTTP 200 response.
       location:
-        - eu-central # Probe from the eu-central location
+        - eu-central # Probe from these locations
         - eu-north
-        - us-east    # Probe from the us-east location
+        - us-east
     static_configs:
       - targets:
           - http://prometheus.io # First probe
@@ -32,23 +32,20 @@ scrape_configs:
       - source_labels: [__address__]
         target_label: __address__
         replacement: check.ping7.io
-      - source_labels: [__param_location]
-        target_label: location
 
   - job_name: ssl
     metrics_path: /tls/probe
     scheme: https
-    scrape_interval: 15m
+    scrape_interval: 15m # scrape only every 15 minutes as information is not
+                         # going to change very often
     authorization:
-      # Your ping7.io API token stored in this file
       credentials_file: /etc/prometheus/ping7io-token
     params:
       module: ["https"]
       location:
-        - eu-central # Probe from the eu-central location
+        - eu-central
     static_configs:
       - targets:
-          - ping7.io:443
           - prometheus.io:443
     relabel_configs:
       - source_labels: [__address__]
@@ -58,5 +55,23 @@ scrape_configs:
       - source_labels: [__address__]
         target_label: __address__
         replacement: check.ping7.io
-      - source_labels: [__param_location]
-        target_label: location
+
+  - job_name: ssl-labs
+    metrics_path: /ssllabs/probe
+    scheme: https
+    authorization:
+      credentials_file: /etc/prometheus/ping7io-token
+    params:
+      module: ["https"]
+    static_configs:
+      - targets:
+          - ping7.io
+          - prometheus.io
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - source_labels: [__address__]
+        target_label: __address__
+        replacement: check.ping7.io
