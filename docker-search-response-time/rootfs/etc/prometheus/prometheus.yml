@@ -1,0 +1,47 @@
+global:
+  scrape_interval: 1m
+
+rule_files:
+  - /etc/prometheus/rules/*.yaml
+
+scrape_configs:
+
+  - job_name: blackbox
+    metrics_path: /blackbox/probe
+    scheme: https
+    authorization:
+      # Your ping7.io API token stored in this file
+      credentials_file: /etc/prometheus/ping7io-token
+    params:
+      module: [http_2xx]
+      location:
+        - eu-central
+        - eu-north
+      target: ["https://www.zalando.de/katalog/"]
+    static_configs:
+      - targets:
+          - schuhe
+          - hose
+          - schwarz
+          - sale
+          - damen
+    relabel_configs:
+      # store target as search_term
+      - source_labels: [__address__]
+        regex: '(.*)'
+        target_label: search_term
+
+      # build new target by concatenating
+      # target param and static target config
+      - source_labels: [__param_target, __address__]
+        separator: "?q="
+        target_label: __param_target
+
+      # store new target as instance
+      - source_labels: [__param_target]
+        target_label: instance
+
+      # Pin the exporter address to ping7.io
+      - source_labels: [__address__]
+        target_label: __address__
+        replacement: check.ping7.io
